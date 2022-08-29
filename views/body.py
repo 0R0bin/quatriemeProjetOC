@@ -111,3 +111,17 @@ class View:
         if not ranking_player:
             return None
         return ranking_player
+    
+    def prompt_player_score(self):
+        """Prompt for player score"""
+        score_player = input("Entrez le score du joueur : ")
+        if not score_player:
+            return None
+        return score_player
+    
+    #   =======================
+    #         Test Views
+    #   =======================
+    def show_pair_player(self, player, player2):
+        """Affiche une paire de joueur"""
+        print(f"Première paire de joueur : {player} et {player2}")
