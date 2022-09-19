@@ -3,14 +3,17 @@
 class Player:
     """Player"""
 
-    def __init__(self, name, nickname, dob, gender, ranking, score):
+    def __init__(self, name, nickname, dob, gender, ranking):
         "Some informations about the player"
         self.name = name
         self.nickname = nickname
         self.dob = dob
         self.gender = gender
         self.ranking = ranking
-        self.score = score
+        self.score = 0
+
+    def modifyScore(self):
+        self.score = input()
 
     def getRanking(self):
         """Return ranking & ranking_temp of a player"""

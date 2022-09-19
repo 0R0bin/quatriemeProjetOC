@@ -7,7 +7,7 @@ class View:
     #   Tournament view section
     #   =======================
 
-    def create_tournament(self):
+    def menu(self):
         """Create tournament"""
         print("Souhaitez-vous créer un tournoi ?")
         # Choix de lancer ou non le tournoi
@@ -42,7 +42,7 @@ class View:
         return date_tournament
 
     def prompt_tournament_round(self):
-        """Prompt for tournament date"""
+        """Prompt for tournament nb of round"""
         round_tournament = input("Entrez le nombre de tour du tournoi : ")
         if not round_tournament:
             return None
@@ -56,7 +56,7 @@ class View:
         Fast play
         """
         print("Choissisez votre contrôle du temps : \n")
-        timeplay_tournament = input("Bullet ou Blitz ou Coup rapide")
+        timeplay_tournament = input("Bullet ou Blitz ou Coup rapide :")
         if timeplay_tournament == "Bullet" or timeplay_tournament == "bullet":
             return timeplay_tournament
         elif timeplay_tournament == "Blitz" or timeplay_tournament == "blitz":
@@ -99,8 +99,8 @@ class View:
         return dob_player
 
     def prompt_player_gender(self):
-        """Prompt for player date of birth (dob)"""
-        gender_player = input("Entrez la date de naissance du joueur : ")
+        """Prompt for player gender"""
+        gender_player = input("Entrez genre du joueur : ")
         if not gender_player:
             return None
         return gender_player
@@ -111,14 +111,14 @@ class View:
         if not ranking_player:
             return None
         return ranking_player
-    
-    def prompt_player_score(self):
-        """Prompt for player score"""
-        score_player = input("Entrez le score du joueur : ")
-        if not score_player:
-            return None
-        return score_player
-    
+
+    # def prompt_player_score(self):
+    #     """Prompt for player score"""
+    #     score_player = input("Entrez le score du joueur : ")
+    #     if not score_player:
+    #         return None
+    #     return score_player
+
     #   =======================
     #         Test Views
     #   =======================

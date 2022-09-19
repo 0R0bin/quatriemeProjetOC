@@ -1,7 +1,7 @@
-"""Define the tours"""
+"""Define the rounds"""
 
-class Tours:
-    """Tours"""
+class Round:
+    """Round"""
 
     def __init__(self, name, date_debut, date_fin):
         "Some informations about the tours"
