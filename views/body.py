@@ -3,21 +3,38 @@
 class View:
     """Chess Tournament View"""
 
+    #   =====================
+    #       Global Views
+    #   =====================
+    def error(self):
+        """Display if an error is encountered"""
+        print("Désolé, une erreur a été rencontrée, fermeture du programme")
+        quit()
+
+
     #   =======================
     #   Tournament view section
     #   =======================
 
     def menu(self):
-        """Create tournament"""
-        print("Souhaitez-vous créer un tournoi ?")
+        """Display information for the menu"""
+        # Affichage des choix
+        print("Que souhaitez-vous faire ?\n")
+        print("1 - Créer un tournoi\n")
+        print("2 - Création d'un ou plusieurs joueur(s)\n")
+
         # Choix de lancer ou non le tournoi
-        choice = input("Oui ou non ? : ")
-        if choice == "Oui" or choice == "oui" or choice == "yes" or choice == "y":
-            return True
-        elif choice == "Non" or choice == "non" or choice == "no" or choice == "n":
-            return False
+        choice = input("Merci d'indiquer le numéro de votre choix : ")
+        if choice == "1" or choice == "un" or choice == "Un":
+            print("Vous avez choisi de créer un tournoi\n")
+            return 1
+
+        elif choice == "2" or choice == "deux" or choice == "Deux":
+            print("Vous avez choisi la création de joueur\n")
+            return 2
+
         else:
-            print("Désolé votre réponse n'est pas reconnue")
+            print("Désolé votre réponse n'est pas reconnue, fermeture du programme\n")
             return False
 
     def prompt_tournament_name(self):
@@ -55,8 +72,8 @@ class View:
         Blitz
         Fast play
         """
-        print("Choissisez votre contrôle du temps : \n")
-        timeplay_tournament = input("Bullet ou Blitz ou Coup rapide :")
+        print("Choissisez votre contrôle du temps")
+        timeplay_tournament = input("Bullet ou Blitz ou Coup rapide : ")
         if timeplay_tournament == "Bullet" or timeplay_tournament == "bullet":
             return timeplay_tournament
         elif timeplay_tournament == "Blitz" or timeplay_tournament == "blitz":
@@ -64,7 +81,8 @@ class View:
         elif timeplay_tournament == "Coup rapide" or timeplay_tournament == "coup rapide":
             return timeplay_tournament
         else:
-            return None
+            timeplay_tournament = "Non défini"
+            return timeplay_tournament
 
     def prompt_tournament_description(self):
         """Prompt for description"""
@@ -79,7 +97,7 @@ class View:
 
     def prompt_player_name(self):
         """Prompt for player name"""
-        name_player = input("Entrez le nom du joueur : ")
+        name_player = input("\nEntrez le nom du joueur : ")
         if not name_player:
             return None
         return name_player
@@ -112,12 +130,52 @@ class View:
             return None
         return ranking_player
 
-    # def prompt_player_score(self):
-    #     """Prompt for player score"""
-    #     score_player = input("Entrez le score du joueur : ")
-    #     if not score_player:
-    #         return None
-    #     return score_player
+    def nb_player_to_create(self):
+        """Display for the player creation screen"""
+        nb_player_to_create = input("Combien voulez-vous en créer ? ")
+        return nb_player_to_create
+
+    def display_nb_player_created(self, number):
+        """Display for informations"""
+        if number < 2:
+            print(f"Merci, vous avez créé {number} joueur")
+        elif number >= 2:
+            print(f"Merci, vous avez créé {number} joueurs")
+
+    #   =======================
+    #          Round Views
+    #   =======================
+    def prompt_round_name(self):
+        """Prompt for round name"""
+        name_round = input("\nEntrez le nom du round : ")
+        if not name_round:
+            return None
+        return name_round
+
+    def prompt_round_begin_date(self):
+        """Prompt for round date_debut"""
+        date_begin_round = input("Entrez la date de début du round : ")
+        if not date_begin_round:
+            return None
+        return date_begin_round
+
+    def prompt_round_end_date(self):
+        """Prompt for round date_fin"""
+        date_end_round = input("Entrez la date de fin du round : ")
+        if not date_end_round:
+            return None
+        return date_end_round
+
+    def winner_of_the_match(self, match, numero_match):
+        """Prompt for the winner of the round"""
+        string_joueur_1 = f"\nLe match {numero_match} opposait {match.player1.name}, le joueur n°1 "
+        string_joueur_2 = f"à {match.player2.name}, le joueur n°2"
+        print(string_joueur_1 + string_joueur_2 +"\n")
+        print("Indiquer 1, si le joueur 1 a gagné")
+        print("Indiquer 2, si le joueur 2 a gagné")
+        print("Indiquer 3, si il y a eu égalité\n")
+        winner = input("Merci d'indiquer le vainqueur du match : ")
+        return winner
 
     #   =======================
     #         Test Views

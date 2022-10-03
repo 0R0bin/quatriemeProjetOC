@@ -1,4 +1,5 @@
 """Main Controller"""
+from re import M
 from typing import List
 
 from models.match import Match
@@ -16,78 +17,148 @@ class Controller:
         self.match: List[Match] = []
         self.rounds: List[Round] = []
         self.tournament = Tournament
+        self.actual_round = Round
 
         # View
         self.view = view
 
-    def menu(self):
-        """Function creating tournament if choice is True"""
-        choice = self.view.menu()
 
-        if choice is True:
-
-            name_tournament = self.view.prompt_tournament_name()
-            if not name_tournament:
-                return
-            place_tournament = self.view.prompt_tournament_place()
-            if not place_tournament:
-                return
-            date_tournament = self.view.prompt_tournament_date()
-            if not date_tournament:
-                return
-            nb_rounds = self.view.prompt_tournament_round()
-            if not nb_rounds:
-                return
-            timeplay_tournament = self.view.prompt_tournament_timeplay()
-            if not timeplay_tournament:
-                return
-            description_tournament = self.view.prompt_tournament_description()
-            if not description_tournament:
-                return
-
-            # Creation du tournoi
-            tournament = Tournament(name_tournament, place_tournament, date_tournament, timeplay_tournament, description_tournament, nb_rounds)
-            print(f"{tournament.name} / {tournament.place}")
-
-        elif choice is False:
-            print("Vous avez choisi de ne pas lancer de tournoi")
+    def create_tournament(self):
+        """Creation of a tournament"""
+        name_tournament = self.view.prompt_tournament_name()
+        if not name_tournament:
+            return
+        place_tournament = self.view.prompt_tournament_place()
+        if not place_tournament:
+            return
+        date_tournament = self.view.prompt_tournament_date()
+        if not date_tournament:
+            return
+        nb_rounds = self.view.prompt_tournament_round()
+        if not nb_rounds:
+            return
+        timeplay_tournament = self.view.prompt_tournament_timeplay()
+        if not timeplay_tournament:
+            return
+        description_tournament = self.view.prompt_tournament_description()
+        if not description_tournament:
             return
 
-    def get_players(self):
-        """Ajout de joueurs"""
-        while len(self.players) < 8:
-            name = self.view.prompt_player_name()
-            if not name:
-                return
-            nickname = self.view.prompt_player_nickname()
-            if not nickname:
-                return
-            dob = self.view.prompt_player_dob()
-            if not dob:
-                return
-            gender = self.view.prompt_player_gender()
-            if not gender:
-                return
-            ranking = self.view.prompt_player_ranking()
-            if not ranking:
-                return
-# e            score = self.view.prompt_player_score()
-#             if not score:
-#                 return
-            player = Player(name, nickname, dob, gender, ranking)
-            self.players.append(player)
-
-    def merge_players_ranking(self):
-        """Merge players with their rankings"""
-        self.players.sort(key=lambda players:players.ranking)
-
-        for player in self.players:
-            print(f"{player.name} / {player.ranking}")
+        # Creation du tournoi
+        self.tournament = Tournament(name_tournament, place_tournament, date_tournament, timeplay_tournament, description_tournament, nb_rounds)
 
 
-    # Execution du programme
+    def create_player(self):
+        """Création d'un joueur"""
+        name = self.view.prompt_player_name()
+        if not name:
+            return
+        nickname = self.view.prompt_player_nickname()
+        if not nickname:
+            return
+        dob = self.view.prompt_player_dob()
+        if not dob:
+            return
+        gender = self.view.prompt_player_gender()
+        if not gender:
+            return
+        ranking = self.view.prompt_player_ranking()
+        if not ranking:
+            return
+
+        player = Player(name, nickname, dob, gender, ranking)
+        self.players.append(player)
+
+    def merge_players_ranking_world(self):
+        """Merge players with their world rankings"""
+        self.players.sort(key=lambda players:players.ranking_world)
+
+
+    def merge_players_ranking_tournament(self):
+        """Merge players with their tournament rankings"""
+        self.players.sort(key=lambda players:players.ranking_tournament)
+
+        # Verify if players have the same tournament rank
+
+    def create_round_and_matchs(self):
+        """Create round & match with the ranked list of players"""
+        name = self.view.prompt_round_name()
+        if not name:
+            return
+        begin_date = self.view.prompt_round_begin_date()
+        if not begin_date:
+            return
+        end_date = self.view.prompt_round_end_date()
+        if not end_date:
+            return
+
+        actual_round = Round(name, begin_date, end_date)
+        self.rounds.append(actual_round)
+
+        for i in range(0, int(len(self.players)), 2):
+            actual_round.matchs.append(Match(self.players[i], self.players[i + 1]))
+        
+        return actual_round
+
+    def choosing_a_winner_for_all_matchs_in_round(self, actual_round):
+        """Function to choose a winner for a match"""
+        numero_match = 0
+        for match in actual_round.matchs:
+            numero_match += 1
+            winner = int(self.view.winner_of_the_match(match, numero_match))
+            if winner == 1:
+                match.player1.ranking_tournament += 1
+            elif winner == 2:
+                match.player2.ranking_tournament += 1
+            elif winner == 3:
+                match.player1.ranking_tournament += 0.5
+                match.player2.ranking_tournament += 0.5
+            else:
+                self.view.error()
+
+
+    #   ======================
+    #   Execution du programme
+    #   ======================
+
     def run(self):
-        """Execution du tournoi"""
-        self.menu()
-        self.get_players()
-        self.merge_players_ranking()
+        """Execution du programme pour le tournoi"""
+
+        # Menu pour choisir ce que va exectuer le programme
+        choice = self.view.menu()
+        # 1 : Création de tournoi
+        if choice == 1:
+            self.create_tournament()
+
+            print(self.tournament.nb_rounds)
+
+            i = 0
+            while i < 8:
+                i += 1
+                self.create_player()
+
+            self.merge_players_ranking_world()
+
+            j = 0
+            while j < int(self.tournament.nb_rounds):
+                j +=1
+                actual_round = self.create_round_and_matchs()
+                self.choosing_a_winner_for_all_matchs_in_round(actual_round)
+                self.merge_players_ranking_tournament()
+
+        # 2 : Création de joueur(s)
+        elif choice == 2:
+            nb_player_to_create = self.view.nb_player_to_create()
+            nb_player_to_create = int(nb_player_to_create)
+
+            i = 0
+            while i < nb_player_to_create:
+                i += 1
+                self.create_player()
+
+            self.view.display_nb_player_created(nb_player_to_create)
+            self.run()
+
+        # Error
+        elif choice is False:
+            return
