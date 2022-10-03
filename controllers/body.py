@@ -1,5 +1,4 @@
 """Main Controller"""
-from re import M
 from typing import List
 
 from models.match import Match
@@ -116,6 +115,10 @@ class Controller:
             else:
                 self.view.error()
 
+    def winner_and_score_tournament(self):
+        """Merge players in reverse so you can display the winner"""
+        self.players.sort(key=lambda players:players.ranking_tournament, reverse = True)
+        self.view.tournament_ranking_and_winner(self.players)
 
     #   ======================
     #   Execution du programme
@@ -130,8 +133,6 @@ class Controller:
         if choice == 1:
             self.create_tournament()
 
-            print(self.tournament.nb_rounds)
-
             i = 0
             while i < 8:
                 i += 1
@@ -145,6 +146,14 @@ class Controller:
                 actual_round = self.create_round_and_matchs()
                 self.choosing_a_winner_for_all_matchs_in_round(actual_round)
                 self.merge_players_ranking_tournament()
+
+            self.winner_and_score_tournament()
+
+            reload_choice = self.view.reload_tournament()
+            if reload_choice is True:
+                self.run()
+            else:
+                quit()
 
         # 2 : Création de joueur(s)
         elif choice == 2:

@@ -91,6 +91,28 @@ class View:
             return None
         return description_tournament
 
+    def tournament_ranking_and_winner(self, list_players):
+        """Display the ranking inside the tournament & the winner of it"""
+        print("\nVoici les résultats du tournoi")
+        i = 0
+        for player in list_players:
+            i += 1
+            print(f"{i} - {player.name} {player.nickname} avec {player.ranking_tournament}")
+
+        print(f"Le vainquer du tournoi est donc {list_players[0].name} ! Félicitations !\n")
+
+    def reload_tournament(self):
+        """Prompt to reload the tournament"""
+        choice = input("Voulez-vous retourner au menu ? ")
+        if choice == "Oui" or choice == "oui" or choice == "y" or choice == "yes" or choice == "Yes":
+            return True
+        elif choice == "Non" or choice == "non" or choice == "n" or choice == "no" or choice == "No":
+            return False
+        else:
+            print("Nous n'avons pas compris votre demande, fermeture du programme")
+            return
+
+
     #   ===================
     #   Player view section
     #   ===================
