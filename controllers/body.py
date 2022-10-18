@@ -1,10 +1,12 @@
 """Main Controller"""
 from typing import List
 
+import controllers.database as db
 from models.match import Match
 from models.player import Player
 from models.tournament import Tournament
 from models.round import Round
+
 
 class Controller:
     """Main controller."""
@@ -15,12 +17,10 @@ class Controller:
         self.players: List[Player] = []
         self.match: List[Match] = []
         self.rounds: List[Round] = []
-        self.tournament = Tournament
         self.actual_round = Round
 
         # View
         self.view = view
-
 
     def create_tournament(self):
         """Creation of a tournament"""
@@ -44,8 +44,7 @@ class Controller:
             return
 
         # Creation du tournoi
-        self.tournament = Tournament(name_tournament, place_tournament, date_tournament, timeplay_tournament, description_tournament, nb_rounds)
-
+        return Tournament(name_tournament, place_tournament, date_tournament, timeplay_tournament, description_tournament, nb_rounds)
 
     def create_player(self):
         """Création d'un joueur"""
@@ -66,18 +65,30 @@ class Controller:
             return
 
         player = Player(name, nickname, dob, gender, ranking)
+        # self.save_player_to_db(player.serialized())
         self.players.append(player)
+        return player
 
     def merge_players_ranking_world(self):
         """Merge players with their world rankings"""
-        self.players.sort(key=lambda players:players.ranking_world)
+        self.players.sort(key=lambda players: players.ranking_world)
 
+    def reset_tournament_score(self):
+        """Reset the ranking tournament of all players"""
+        for player in self.players:
+            player.ranking_tournament = 0
 
     def merge_players_ranking_tournament(self):
         """Merge players with their tournament rankings"""
-        self.players.sort(key=lambda players:players.ranking_tournament)
-
-        # Verify if players have the same tournament rank
+        self.players.sort(key=lambda players: players.ranking_tournament)
+        for i in range(0, int(len(self.players)), 2):
+            player1 = self.players[i]
+            player2 = self.players[i + 1]
+            if player1.ranking_tournament == player2.ranking_tournament:
+                if player1.ranking_world > player2.ranking_world:
+                    return
+                else:
+                    self.players[i], self.players[i + 1] = self.players[i + 1], self.players[i]
 
     def create_round_and_matchs(self):
         """Create round & match with the ranked list of players"""
@@ -95,8 +106,8 @@ class Controller:
         self.rounds.append(actual_round)
 
         for i in range(0, int(len(self.players)), 2):
-            actual_round.matchs.append(Match(self.players[i], self.players[i + 1]))
-        
+            actual_round.matchs.append(Match(self.players[i], 0, self.players[i + 1], 0))
+
         return actual_round
 
     def choosing_a_winner_for_all_matchs_in_round(self, actual_round):
@@ -117,7 +128,7 @@ class Controller:
 
     def winner_and_score_tournament(self):
         """Merge players in reverse so you can display the winner"""
-        self.players.sort(key=lambda players:players.ranking_tournament, reverse = True)
+        self.players.sort(key=lambda players: players.ranking_tournament, reverse=True)
         self.view.tournament_ranking_and_winner(self.players)
 
     #   ======================
@@ -126,23 +137,26 @@ class Controller:
 
     def run(self):
         """Execution du programme pour le tournoi"""
-
         # Menu pour choisir ce que va exectuer le programme
         choice = self.view.menu()
+
         # 1 : Création de tournoi
         if choice == 1:
-            self.create_tournament()
+            tournament = self.create_tournament()
 
+            nb_players_in_tournament = int(self.view.number_player_in_tournament(tournament.nb_rounds))
             i = 0
-            while i < 8:
+            while i < nb_players_in_tournament:
                 i += 1
-                self.create_player()
+                name = self.view.searching_players()
+                db.retrieve_player(name)
 
+            self.reset_tournament_score()
             self.merge_players_ranking_world()
 
             j = 0
-            while j < int(self.tournament.nb_rounds):
-                j +=1
+            while j < int(tournament.nb_rounds):
+                j += 1
                 actual_round = self.create_round_and_matchs()
                 self.choosing_a_winner_for_all_matchs_in_round(actual_round)
                 self.merge_players_ranking_tournament()
@@ -163,7 +177,12 @@ class Controller:
             i = 0
             while i < nb_player_to_create:
                 i += 1
-                self.create_player()
+                player_created = self.create_player()
+                # Sauvegarde dans la base de données joueurs
+                save_to_db = self.view.save_to_db_player()
+                if save_to_db is True:
+                    serialized_player = player_created.serialized()
+                    db.save_to_db(serialized_player)
 
             self.view.display_nb_player_created(nb_player_to_create)
             self.run()

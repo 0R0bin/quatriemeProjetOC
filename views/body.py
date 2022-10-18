@@ -1,5 +1,6 @@
 """Base view"""
 
+
 class View:
     """Chess Tournament View"""
 
@@ -10,7 +11,6 @@ class View:
         """Display if an error is encountered"""
         print("Désolé, une erreur a été rencontrée, fermeture du programme")
         quit()
-
 
     #   =======================
     #   Tournament view section
@@ -86,7 +86,7 @@ class View:
 
     def prompt_tournament_description(self):
         """Prompt for description"""
-        description_tournament = input("Entrez la description du tournoi : ")
+        description_tournament = input("Entrez la description du tournoi : \n")
         if not description_tournament:
             return None
         return description_tournament
@@ -111,7 +111,6 @@ class View:
         else:
             print("Nous n'avons pas compris votre demande, fermeture du programme")
             return
-
 
     #   ===================
     #   Player view section
@@ -158,11 +157,30 @@ class View:
         return nb_player_to_create
 
     def display_nb_player_created(self, number):
-        """Display for informations"""
+        """Display for informations about the number of players created"""
         if number < 2:
             print(f"Merci, vous avez créé {number} joueur")
         elif number >= 2:
             print(f"Merci, vous avez créé {number} joueurs")
+
+    def save_to_db_player(self):
+        """Prompt to save into database"""
+        choice = input("Voulez-vous sauvegarder le joueur dans la base de données ? ")
+        if choice == "Oui" or "oui" or "yes" or "y":
+            return True
+        elif choice == "Non" or "non" or "no" or "n":
+            return False
+
+    def number_player_in_tournament(self, nb_rounds):
+        """Auto-choose the number of players in the tournament"""
+        nb_players = int(nb_rounds) * 2
+        print(f"Vous avez indiqué {nb_rounds} tours pour ce tournoi, il y aura donc {nb_players} joueurs")
+        return nb_players
+
+    def searching_players(self):
+        """Input to research player into database"""
+        name = input("Merci d'indiquer le nom du joueur recherché : ")
+        return name
 
     #   =======================
     #          Round Views
@@ -192,7 +210,7 @@ class View:
         """Prompt for the winner of the round"""
         string_joueur_1 = f"\nLe match {numero_match} opposait {match.player1.name}, le joueur n°1 "
         string_joueur_2 = f"à {match.player2.name}, le joueur n°2"
-        print(string_joueur_1 + string_joueur_2 +"\n")
+        print(string_joueur_1 + string_joueur_2 + "\n")
         print("Indiquer 1, si le joueur 1 a gagné")
         print("Indiquer 2, si le joueur 2 a gagné")
         print("Indiquer 3, si il y a eu égalité\n")

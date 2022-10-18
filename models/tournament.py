@@ -1,5 +1,6 @@
 """Define the tournament"""
 
+
 class Tournament:
     """Tournament"""
 
@@ -13,4 +14,3 @@ class Tournament:
         self.nb_rounds = nb_rounds
         self.rounds = []
         self.players = []
-    
