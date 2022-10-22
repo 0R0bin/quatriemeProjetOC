@@ -153,7 +153,13 @@ class Controller:
                 i += 1
                 name = self.view.searching_players()
                 player_to_add = db.retrieve_player(name)
-                self.players.append(player_to_add)
+                self.view.player_added(name)
+
+                if player_to_add is False:
+                    self.view.error_add_player()
+                    i -= 1
+                else:
+                    self.players.append(player_to_add)
 
             self.reset_tournament_score()
             self.merge_players_ranking_world()
@@ -166,6 +172,10 @@ class Controller:
                 self.merge_players_ranking_tournament()
 
             self.winner_and_score_tournament()
+            choice_save = self.view.save_tournament()
+
+            if choice_save is True:
+                db.save_to_db_tournament(tournament.serialized())
 
             reload_choice = self.view.reload_tournament()
             if reload_choice is True:
@@ -193,6 +203,33 @@ class Controller:
             self.view.display_nb_player_created(nb_player_to_create)
             self.run()
 
+        #   ===================
+        #       3 : Rapports
+        #   ===================
+        elif choice == 3:
+            # Afficher tous les rapports possible
+            report_choice = self.view.menu_reports()
+            # Rapport sur tous les joueurs dans la base
+            if report_choice == 1:
+                choice_back = db.retrieve_all_players()
+                if choice_back is True:
+                    self.run()
+                else:
+                    quit()
+            # Rapport sur tous les tournois dans la base
+            elif report_choice == 2:
+                choice_back = db.retrieve_all_tournament()
+                if choice_back is True:
+                    self.run()
+                else:
+                    quit()
+            # Retour
+            elif report_choice == 5:
+                self.run()
+            # Inconnu
+            else:
+                self.run()
+
         # Error
         elif choice is False:
-            return
+            self.run()

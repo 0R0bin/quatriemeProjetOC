@@ -14,3 +14,29 @@ class Tournament:
         self.nb_rounds = nb_rounds
         self.rounds = []
         self.players = []
+
+    def serialized(self):
+        """Transform Tournament object into JSON readable dictionnary"""
+        serialized_tournament = {
+            "Name": self.name,
+            "Place": self.place,
+            "Date": self.date,
+            "Mode": self.timeplay,
+            "Description": self.description,
+            "NombreRounds": self.nb_rounds,
+            "ListeRounds": self.rounds,
+            "ListeJoueurs": self.players
+        }
+        return serialized_tournament
+
+    def deserialized(self, object_json):
+        """Transfom tournament from db into tournament object"""
+        self.name = object_json['Name']
+        self.place = object_json['Place']
+        self.date = object_json['Date']
+        self.timeplay = object_json['Mode']
+        self.description = object_json['Description']
+        self.nb_rounds = object_json['NombreRounds']
+        self.rounds = object_json['ListeRounds']
+        self.players = object_json['ListeJoueurs']
+        return "Tournoi crée"
