@@ -44,7 +44,8 @@ class Controller:
             return
 
         # Creation du tournoi
-        return Tournament(name_tournament, place_tournament, date_tournament, timeplay_tournament, description_tournament, nb_rounds)
+        return Tournament(name_tournament, place_tournament, date_tournament,
+        timeplay_tournament, description_tournament, nb_rounds)
 
     def create_player(self):
         """Création d'un joueur"""
@@ -140,7 +141,9 @@ class Controller:
         # Menu pour choisir ce que va exectuer le programme
         choice = self.view.menu()
 
-        # 1 : Création de tournoi
+        #   ===============================
+        #       1 : Création de tournoi
+        #   ===============================
         if choice == 1:
             tournament = self.create_tournament()
 
@@ -149,7 +152,8 @@ class Controller:
             while i < nb_players_in_tournament:
                 i += 1
                 name = self.view.searching_players()
-                db.retrieve_player(name)
+                player_to_add = db.retrieve_player(name)
+                self.players.append(player_to_add)
 
             self.reset_tournament_score()
             self.merge_players_ranking_world()
@@ -169,7 +173,9 @@ class Controller:
             else:
                 quit()
 
-        # 2 : Création de joueur(s)
+        #   =================================
+        #       2 : Création de joueur(s)
+        #   =================================
         elif choice == 2:
             nb_player_to_create = self.view.nb_player_to_create()
             nb_player_to_create = int(nb_player_to_create)
