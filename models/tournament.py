@@ -40,3 +40,11 @@ class Tournament:
         self.rounds = object_json['ListeRounds']
         self.players = object_json['ListeJoueurs']
         return "Tournoi crée"
+
+    def add_rounds(self, round_to_add):
+        """Add round to the list for db"""
+        self.rounds.append(round_to_add)
+
+    def add_players(self, player_to_add):
+        """Add players to the list for db"""
+        self.players.append(player_to_add)

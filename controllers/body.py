@@ -107,7 +107,11 @@ class Controller:
         self.rounds.append(actual_round)
 
         for i in range(0, int(len(self.players)), 2):
-            actual_round.matchs.append(Match(self.players[i], 0, self.players[i + 1], 0))
+            actual_match = Match(self.players[i], 0, self.players[i + 1], 0)
+            actual_round.matchs.append(actual_match)
+
+            match_to_save = actual_match.serialized()
+            actual_round.matchs_serialized.append(match_to_save)
 
         return actual_round
 
@@ -146,7 +150,6 @@ class Controller:
         #   ===============================
         if choice == 1:
             tournament = self.create_tournament()
-
             nb_players_in_tournament = int(self.view.number_player_in_tournament(tournament.nb_rounds))
             i = 0
             while i < nb_players_in_tournament:
@@ -154,12 +157,14 @@ class Controller:
                 name = self.view.searching_players()
                 player_to_add = db.retrieve_player(name)
                 self.view.player_added(name)
-
                 if player_to_add is False:
                     self.view.error_add_player()
                     i -= 1
                 else:
                     self.players.append(player_to_add)
+                    player_to_save = player_to_add.serialized()
+                    print(player_to_save)
+                    tournament.add_players(player_to_save)
 
             self.reset_tournament_score()
             self.merge_players_ranking_world()
@@ -168,6 +173,8 @@ class Controller:
             while j < int(tournament.nb_rounds):
                 j += 1
                 actual_round = self.create_round_and_matchs()
+                round_to_save = actual_round.serialized()
+                tournament.add_rounds(round_to_save)
                 self.choosing_a_winner_for_all_matchs_in_round(actual_round)
                 self.merge_players_ranking_tournament()
 
@@ -189,7 +196,6 @@ class Controller:
         elif choice == 2:
             nb_player_to_create = self.view.nb_player_to_create()
             nb_player_to_create = int(nb_player_to_create)
-
             i = 0
             while i < nb_player_to_create:
                 i += 1
@@ -229,7 +235,6 @@ class Controller:
             # Inconnu
             else:
                 self.run()
-
         # Error
         elif choice is False:
             self.run()
