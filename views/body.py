@@ -134,9 +134,9 @@ class View:
         i = 0
         for player in list_players:
             i += 1
-            print(f"{i} - {player.name} {player.nickname} avec {player.ranking_tournament}")
+            print(f"{i} - {player.name} {player.nickname} avec {player.ranking_tournament} points")
 
-        print(f"Le vainquer du tournoi est donc {list_players[0].name} ! Félicitations !\n")
+        print(f"Le vainquer du tournoi est donc {list_players[0].name} {list_players[0].nickname}! Félicitations !\n")
 
     def reload_tournament(self):
         """Prompt to reload the tournament"""

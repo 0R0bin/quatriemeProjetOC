@@ -97,9 +97,9 @@ def retrieve_all_tournament():
         string2 = f"ayant pour mode de jeu le {tournament['Mode']} et pour description {tournament['Description']}."
         string3 = f"Il comporte {tournament['NombreRounds']} rounds, en voici la liste : {tournament['ListeRounds']}"
         string4 = f"Voici la liste des joueurs ayant participé : {tournament['ListeJoueurs']}"
-        print(string1 + string2)
-        print(string3)
-        print(string4)
+        print("- " + string1 + string2 + "\n")
+        print(string3 + "\n")
+        print(string4 + "\n")
 
     # Affichage pour utilisateur
     print(f"\nUn total de {len(all_tournament)} tournois est enregistré dans la base !")
