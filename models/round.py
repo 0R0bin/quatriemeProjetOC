@@ -12,6 +12,10 @@ class Round:
         self.matchs = []
         self.matchs_serialized = []
 
+    def change_date_fin(self, date_fin):
+        """Change the end date of a round"""
+        self.date_fin = date_fin
+
     def serialized(self):
         """Transform Round object into JSON readable dictionnary"""
         serialized_round = {

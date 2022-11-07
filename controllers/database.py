@@ -1,6 +1,7 @@
 import os
 from tinydb import TinyDB, Query
 from models.player import Player
+from models.tournament import Tournament
 
 
 # Global variables
@@ -23,9 +24,18 @@ def save_to_db(serialized_player):
     print(f"Le joueur {serialized_player['Name']} a été sauvegardé")
 
 
-def retrieve_all_players():
+def retrieve_all_players(merge_choice):
     """Retrieve & Display all Players in the DataBase"""
     all_players = db_player.all()
+    print(all_players[0]["Name"])
+    # Choix du tri
+    if merge_choice == 1:
+        print("Sort by alphabetical")
+        all_players.sort(key=lambda x: x["Name"])
+    else:
+        print("Sort by classement")
+        all_players.sort(key=lambda x: x["Ranking"])
+        
     for player in all_players:
         # String pour Homme ou Femme ou inconnu
         string_m = f'{player["Name"]} {player["Nickname"]}, né le {player["Dob"]}, '
@@ -51,15 +61,15 @@ def retrieve_all_players():
 def retrieve_player(name):
     """Display all players in Db according to the given name"""
     list_players = db_player.search(Query().Name == name)
-
+    # S'il n'y a qu'un joueur à afficher
     if len(list_players) == 1:
         player = Player('Name', 'nickname', 'dob', 'm', 45)
         player.deserialized(list_players[0])
         return player
-
+    # Si aucun joueur n'est trouvé
     elif len(list_players) == 0:
         return False
-
+    # S'il y a une liste de joueurs à afficher
     else:
         i = 0
         for player in list_players:
@@ -94,8 +104,8 @@ def retrieve_all_tournament():
     all_tournament = db_tournament.all()
     for tournament in all_tournament:
         string1 = f"{tournament['Name']} qui a eu lieu à {tournament['Place']} le {tournament['Date']}, "
-        string2 = f"ayant pour mode de jeu le {tournament['Mode']} et pour description {tournament['Description']}."
-        string3 = f"Il comporte {tournament['NombreRounds']} rounds, en voici la liste : {tournament['ListeRounds']}"
+        string2 = f"ayant pour mode de jeu le {tournament['Mode']} et pour description {tournament['Description']}.\n"
+        string3 = f"Il comporte {tournament['NombreRounds']} rounds, en voici la liste : {tournament['ListeRounds']}\n"
         string4 = f"Voici la liste des joueurs ayant participé : {tournament['ListeJoueurs']}"
         print("- " + string1 + string2 + "\n")
         print(string3 + "\n")
@@ -107,3 +117,72 @@ def retrieve_all_tournament():
     if choice in ("Oui", "oui", "y", "yes"):
         return True
     print("Fermeture du programme...")
+
+def retrieve_x_in_tournament(name_tournament, x):
+    """
+    Retrieve all Players of a tournament
+    If x == 1 : Retrieve All Players
+    If x == 2 : Retrieve All Rounds
+    If x == 3 : Retrieve All Matchs
+    """
+    list_tournament = db_tournament.search(Query().Name == name_tournament)
+    # S'il n'y a qu'un tournoi à afficher
+    if len(list_tournament) == 1:
+        print(f"{list_tournament['Name']}, le {list_tournament['Date']}, à {list_tournament['Place']}\n")
+    # Si aucun tournoi n'est trouvé
+    elif len(list_tournament) == 0:
+        return False
+    # S'il y a une liste de tournoi à afficher
+    else:
+        i = 0
+        for tournament in list_tournament:
+            i += 1
+            print(f"{i} - {tournament['Name']}, le {tournament['Date']}, à {tournament['Place']}\n")
+        tournament_chose = input("Quel tournoi choisissez-vous (indiquer le numéro) : ")
+        tournament_chose = int(tournament_chose)
+        if isinstance(tournament_chose, int):
+            tournament = list_tournament[tournament_chose - 1]
+            print(f"Le tournoi {tournament['Name']}, le {tournament['Date']}, à {tournament['Place']} a été séléctionné\n")
+        else:
+            print("Merci d'indiquer un numéro : ")
+            return
+
+    # Si on veut afficher la liste des joueurs
+    if x == 1:
+        i = 0
+        list_players = tournament['ListeJoueurs']
+        print("Voici la liste des joueurs de ce tournoi : \n")
+        for player in list_players:
+            print(f"{i} - {player['Name']} {player['Nickname']}, né le {player['Dob']} avec un classement de {player['Ranking']}")
+        choice = input("Retour au menu principal ? ")
+        if choice in ("Oui", "oui", "y", "yes"):
+            return True
+        print("Fermeture du programme...")
+
+    # Si on veut afficher la liste des rounds
+    elif x == 2:
+        i = 0
+        list_rounds = tournament['ListeRounds']
+        print("Voici la liste des rounds de ce tournoi : \n")
+        for round in list_rounds:
+            print(f"{i} - {round['Name']} à {round['Place']}, le {round['Date']}")
+        choice = input("Retour au menu principal ? ")
+        if choice in ("Oui", "oui", "y", "yes"):
+            return True
+        print("Fermeture du programme...")
+
+    # Si on veut afficher la liste des matchs
+    elif x == 3:
+        i = 0
+        list_rounds = tournament['ListeRounds']
+        print("Voici la liste des matchs de ce tournoi : \n")
+        for round in list_rounds:
+            matchs = round["Match"]
+            string1 = f"Match opposant {matchs['Player1']['Name']} à {matchs['Player2']['Name']}"
+            string2 = f"{matchs['Player1']['Name']} à obtenu {matchs['Score1']} points"
+            string3 = f"{matchs['Player2']['Name']} à obtenu {matchs['Score2']} points"
+            print(string1 + string2 + string3)
+        choice = input("Retour au menu principal ? ")
+        if choice in ("Oui", "oui", "y", "yes"):
+            return True
+        print("Fermeture du programme...")

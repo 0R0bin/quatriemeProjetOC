@@ -18,6 +18,7 @@ class Controller:
         self.match: List[Match] = []
         self.rounds: List[Round] = []
         self.actual_round = Round
+        self.compteur_round = 0
 
         # View
         self.view = view
@@ -93,15 +94,14 @@ class Controller:
 
     def create_round_and_matchs(self):
         """Create round & match with the ranked list of players"""
-        name = self.view.prompt_round_name()
-        if not name:
-            return
+        # name = self.view.prompt_round_name()
+        self.compteur_round += 1
+        name = "Round " + self.compteur_round
         begin_date = self.view.prompt_round_begin_date()
         if not begin_date:
             return
-        end_date = self.view.prompt_round_end_date()
-        if not end_date:
-            return
+        # end_date = self.view.prompt_round_end_date()
+        end_date = "Undefined"
 
         actual_round = Round(name, begin_date, end_date)
         self.rounds.append(actual_round)
@@ -133,6 +133,7 @@ class Controller:
 
     def winner_and_score_tournament(self):
         """Merge players in reverse so you can display the winner"""
+        self.compteur_round = 0
         self.players.sort(key=lambda players: players.ranking_tournament, reverse=True)
         self.view.tournament_ranking_and_winner(self.players)
 
@@ -151,6 +152,7 @@ class Controller:
         if choice == 1:
             tournament = self.create_tournament()
             nb_players_in_tournament = int(self.view.number_player_in_tournament(tournament.nb_rounds))
+            # Récupération des joueurs
             i = 0
             while i < nb_players_in_tournament:
                 i += 1
@@ -169,13 +171,16 @@ class Controller:
             self.reset_tournament_score()
             self.merge_players_ranking_world()
 
+            # Jouer les rounds
             j = 0
             while j < int(tournament.nb_rounds):
                 j += 1
                 actual_round = self.create_round_and_matchs()
+                self.choosing_a_winner_for_all_matchs_in_round(actual_round)
+                date_fin = input("Entrez la date de fin du round : ")
+                actual_round.change_date_fin(date_fin)
                 round_to_save = actual_round.serialized()
                 tournament.add_rounds(round_to_save)
-                self.choosing_a_winner_for_all_matchs_in_round(actual_round)
                 self.merge_players_ranking_tournament()
 
             self.winner_and_score_tournament()
@@ -215,9 +220,14 @@ class Controller:
         elif choice == 3:
             # Afficher tous les rapports possible
             report_choice = self.view.menu_reports()
-            # Rapport sur tous les joueurs dans la base
+            # Choix d'affichage des joueurs
             if report_choice == 1:
-                choice_back = db.retrieve_all_players()
+                # Choix du tri
+                merge_choice = self.view.merge_player_db()
+                if merge_choice is False:
+                    quit()
+                # Affichage des joueurs + demande de retour ?
+                choice_back = db.retrieve_all_players(merge_choice)
                 if choice_back is True:
                     self.run()
                 else:
@@ -229,8 +239,32 @@ class Controller:
                     self.run()
                 else:
                     quit()
-            # Retour
+            # Affichage des joueurs d'un tournoi
+            elif report_choice == 3:
+                name_tournament = input("Merci d'indiquer le nom du tournoi recherché : ")
+                choice_back = db.retrieve_x_in_tournament(name_tournament, 1)
+                if choice_back is True:
+                    self.run()
+                else:
+                    quit()
+            # Affichage des rounds d'un tournoi
+            elif report_choice == 4:
+                name_tournament = input("Merci d'indiquer le nom du tournoi recherché : ")
+                choice_back = db.retrieve_x_in_tournament(name_tournament, 2)
+                if choice_back is True:
+                    self.run()
+                else:
+                    quit()
+            # Affichage des matchs d'un tournoi
             elif report_choice == 5:
+                name_tournament = input("Merci d'indiquer le nom du tournoi recherché : ")
+                choice_back = db.retrieve_x_in_tournament(name_tournament, 3)
+                if choice_back is True:
+                    self.run()
+                else:
+                    quit()
+            # Retour
+            elif report_choice == 6:
                 self.run()
             # Inconnu
             else:

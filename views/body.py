@@ -12,9 +12,9 @@ class View:
         print("Désolé, une erreur a été rencontrée, fermeture du programme")
         quit()
 
-    #   =======================
-    #   Tournament view section
-    #   =======================
+    #   ====================
+    #       Menu section
+    #   ====================
 
     def menu(self):
         """Display information for the menu"""
@@ -47,7 +47,10 @@ class View:
         print("\nVous avez choisi d'afficher un rapport, lequel choissisez-vous ?\n")
         print("1 - Liste de tous les joueurs sauvegardés dans la base de données\n")
         print("2 - Liste de tous les tournois sauvegardés dans la base de données\n")
-        print("3 - Retour\n")
+        print("3 - Affichage des joueurs d'un tournoi\n")
+        print("4 - Affichage des rounds d'un tournoi\n")
+        print("5 - Affichage des matchs d'un tournoi\n")
+        print("6 - Retour\n")
 
         # Choix de lancer ou non le tournoi
         choice = input("Merci d'indiquer le numéro de votre choix : ")
@@ -60,12 +63,48 @@ class View:
             return 2
 
         elif choice in ("3", "trois", "Trois", "three", "Three"):
-            print("\nRetour au menu précédent...\n")
+            print("\nVous avez choisi d'afficher tous les joueurs d'un tournoi\n")
             return 3
+
+        elif choice in ("4", "quatre", "Quatre", "four", "Four"):
+            print("\nVous avez choisi d'afficher tous les rounds d'un tournoi\n")
+            return 4
+
+        elif choice in ("5", "cinq", "Cinq", "five", "Five"):
+            print("\nVous avez choisi d'afficher tous les matchs d'un tournoi\n")
+            return 5
+
+        elif choice in ("6", "six", "Six"):
+            print("\nRetour au menu précédent\n")
+            return 6
 
         else:
             print("Désolé votre réponse n'est pas reconnue\n")
             return False
+
+    def merge_player_db(self):
+        """Prompt menu to merge player to prompt"""
+        # Gestion des choix
+        print("\nVous avez choisi d'afficher la liste des joueurs, comment souhaitez-vous la trier ?\n")
+        print("1 - Trier par ordre alphabétique\n")
+        print("2 - Trier par ordre de classement\n")
+        choice = input("Merci d'indiquer le numéro de votre choix : ")
+
+        if choice in ("1", "un", "Un", "one", "One"):
+            print("\nVous avez choisi le tri par ordre alphabétique\n")
+            return 1
+
+        elif choice in ("2", "deux", "Deux", "two", "Two"):
+            print("\nVous avez choisi le tri par ordre de classement\n")
+            return 2
+
+        else:
+            print("Désolé votre réponse n'est pas reconnue\n")
+            return False
+
+    #   =======================
+    #   Tournament view section
+    #   =======================
 
     def prompt_tournament_name(self):
         """Prompt for tournament name"""
