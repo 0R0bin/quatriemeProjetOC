@@ -93,7 +93,6 @@ def retrieve_player(name):
 
 def save_to_db_tournament(serialized_tournament):
     """Save a player into the database"""
-    print(serialized_tournament)
     db_tournament.insert(serialized_tournament)
     print(f"Le tournoi {serialized_tournament['Name']} a été sauvegardé")
 

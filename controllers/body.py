@@ -96,7 +96,7 @@ class Controller:
         """Create round & match with the ranked list of players"""
         # name = self.view.prompt_round_name()
         self.compteur_round += 1
-        name = "Round " + self.compteur_round
+        name = "Round " + str(self.compteur_round)
         begin_date = self.view.prompt_round_begin_date()
         if not begin_date:
             return
@@ -165,7 +165,6 @@ class Controller:
                 else:
                     self.players.append(player_to_add)
                     player_to_save = player_to_add.serialized()
-                    print(player_to_save)
                     tournament.add_players(player_to_save)
 
             self.reset_tournament_score()
