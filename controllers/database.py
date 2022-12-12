@@ -113,8 +113,8 @@ def retrieve_all_tournament():
         print(string3)
         i = 0
         for round in tournament['ListeRounds']:
-            i +=1
-            print(f"{i} - Round {round['Name']}, commençant le {round['DateDebut']}, finissant le {round['DateFin']}\n")
+            i += 1
+            print(f"{i} - Round {round['Name']} commençant le {round['DateDebut']} finissant le {round['DateFin']}\n")
             print(f"Un total de {len(round['Match'])} macth a été joué, voici la liste : \n")
             for match in round["Match"]:
                 string1 = f"Match opposant {match['Player1']['Name']} à {match['Player2']['Name']} : "
@@ -133,9 +133,8 @@ def retrieve_all_tournament():
 
             if player["Gender"] == "f" or player['Gender'] == "F":
                 print(f"{i} - {player['Name']} {player['Nickname']}, " + f_string_too_long)
-            else :
+            else:
                 print(f"{i} - {player['Name']} {player['Nickname']}, " + string_too_long)
-
 
     # Affichage pour utilisateur
     print(f"\nUn total de {len(all_tournament)} tournois est enregistré dans la base !")
@@ -188,7 +187,7 @@ def retrieve_x_in_tournament(name_tournament, x):
 
             if player["Gender"] == "f" or player['Gender'] == "F":
                 print(f"{i} - {player['Name']} {player['Nickname']}, " + f_string_too_long)
-            else :
+            else:
                 print(f"{i} - {player['Name']} {player['Nickname']}, " + string_too_long)
 
         choice = input("\nRetour au menu principal ? ")
