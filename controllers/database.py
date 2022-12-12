@@ -102,12 +102,40 @@ def retrieve_all_tournament():
     all_tournament = db_tournament.all()
     for tournament in all_tournament:
         string1 = f"{tournament['Name']} qui a eu lieu à {tournament['Place']} le {tournament['Date']}, "
-        string2 = f"ayant pour mode de jeu le {tournament['Mode']} et pour description {tournament['Description']}.\n"
-        string3 = f"Il comporte {tournament['NombreRounds']} rounds, en voici la liste : {tournament['ListeRounds']}\n"
-        string4 = f"Voici la liste des joueurs ayant participé : {tournament['ListeJoueurs']}"
-        print("- " + string1 + string2 + "\n")
-        print(string3 + "\n")
-        print(string4 + "\n")
+        string2 = f"ayant pour mode de jeu le {tournament['Mode']} et pour description {tournament['Description']}."
+        string3 = f"Il comporte {tournament['NombreRounds']} rounds, en voici la liste :\n"
+        string4 = "Voici la liste des joueurs ayant participé : \n"
+        print("\n==============================================================================\n")
+        print("- " + string1 + string2)
+        print("\n==============================================================================\n")
+
+        # Affichage des rounds du tournoi
+        print(string3)
+        i = 0
+        for round in tournament['ListeRounds']:
+            i +=1
+            print(f"{i} - Round {round['Name']}, commençant le {round['DateDebut']}, finissant le {round['DateFin']}\n")
+            print(f"Un total de {len(round['Match'])} macth a été joué, voici la liste : \n")
+            for match in round["Match"]:
+                string1 = f"Match opposant {match['Player1']['Name']} à {match['Player2']['Name']} : "
+                string2 = f"{match['Player1']['Name']} à obtenu {match['Score1']} points / "
+                string3 = f"{match['Player2']['Name']} à obtenu {match['Score2']} points"
+                print(string1 + string2 + string3)
+            print("\n")
+
+        # Affichage des joueurs ayant participé au tournoi
+        print(string4)
+        i = 0
+        for player in tournament["ListeJoueurs"]:
+            i += 1
+            string_too_long = f"né le {player['Dob']} avec un classement de {player['Ranking']}"
+            f_string_too_long = f"née le {player['Dob']} avec un classement de {player['Ranking']}"
+
+            if player["Gender"] == "f" or player['Gender'] == "F":
+                print(f"{i} - {player['Name']} {player['Nickname']}, " + f_string_too_long)
+            else :
+                print(f"{i} - {player['Name']} {player['Nickname']}, " + string_too_long)
+
 
     # Affichage pour utilisateur
     print(f"\nUn total de {len(all_tournament)} tournois est enregistré dans la base !")
@@ -154,8 +182,15 @@ def retrieve_x_in_tournament(name_tournament, x):
         list_players = tournament_here['ListeJoueurs']
         print("Voici la liste des joueurs de ce tournoi : \n")
         for player in list_players:
-            string_too_long = "né le {player['Dob']} avec un classement de {player['Ranking']}"
-            print(f"{i} - {player['Name']} {player['Nickname']}, " + string_too_long)
+            i += 1
+            string_too_long = f"né le {player['Dob']} avec un classement de {player['Ranking']}"
+            f_string_too_long = f"née le {player['Dob']} avec un classement de {player['Ranking']}"
+
+            if player["Gender"] == "f" or player['Gender'] == "F":
+                print(f"{i} - {player['Name']} {player['Nickname']}, " + f_string_too_long)
+            else :
+                print(f"{i} - {player['Name']} {player['Nickname']}, " + string_too_long)
+
         choice = input("\nRetour au menu principal ? ")
         if choice in ("Oui", "oui", "y", "yes"):
             return True
@@ -167,6 +202,7 @@ def retrieve_x_in_tournament(name_tournament, x):
         list_rounds = tournament_here['ListeRounds']
         print("Voici la liste des rounds de ce tournoi : \n")
         for round in list_rounds:
+            i += 1
             print(f"{i} - Round {round['Name']}, commençant le {round['DateDebut']}, finissant le {round['DateFin']}")
         choice = input("\nRetour au menu principal ? ")
         if choice in ("Oui", "oui", "y", "yes"):
@@ -181,8 +217,8 @@ def retrieve_x_in_tournament(name_tournament, x):
         for round in list_rounds:
             matchs = round["Match"]
             for match in matchs:
-                string1 = f"Match opposant {match['Player1']['Name']} à {match['Player2']['Name']}"
-                string2 = f"{match['Player1']['Name']} à obtenu {match['Score1']} points"
+                string1 = f"Match opposant {match['Player1']['Name']} à {match['Player2']['Name']} : "
+                string2 = f"{match['Player1']['Name']} à obtenu {match['Score1']} points / "
                 string3 = f"{match['Player2']['Name']} à obtenu {match['Score2']} points"
                 print(string1 + string2 + string3)
         choice = input("\nRetour au menu principal ? ")
