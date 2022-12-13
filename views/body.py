@@ -23,19 +23,23 @@ class View:
         print("1 - Créer un tournoi\n")
         print("2 - Création d'un ou plusieurs joueur(s)\n")
         print("3 - Rapports\n")
+        print("4 - Charger le tournoi précédent\n")
 
         # Choix de lancer ou non le tournoi
-        choice = input("Merci d'indiquer le numéro de votre choix : ")
-        if choice == "1" or choice == "un" or choice == "Un":
+        choice = str(input("Merci d'indiquer le numéro de votre choix : "))
+        if choice in ("1", "un", "Un", "One", "one"):
             print("\nVous avez choisi de créer un tournoi\n")
             return 1
 
-        elif choice == "2" or choice == "deux" or choice == "Deux":
+        elif choice in ("2", "deux", "Deux", "Two", "two"):
             print("\nVous avez choisi la création de joueur\n")
             return 2
 
-        elif choice == "3" or choice == "trois" or choice == "Trois":
+        elif choice in ("3", "trois", "Trois", "Three", "three"):
             return 3
+
+        elif choice in ("4", "quatre", "Quatre", "Four", "four"):
+            return 4
 
         else:
             print("\nDésolé votre réponse n'est pas reconnue\n")
@@ -309,8 +313,28 @@ class View:
         return winner
 
     #   =======================
+    #         STOP VIEW
+    #   =======================
+    def confirmation_stop(self):
+        """Ask the user if he's sure to close the program"""
+        choice = input("Voulez-vous quitter le programme ? ")
+        if choice in ("Oui", "oui", "y", "yes", "Yes"):
+            return True
+        elif choice in ("Non", "non", "n", "no", "No"):
+            return False
+
+    def want_to_save_state(self):
+        """Ask the user if he wants to save the state of the tournament"""
+        choice = input("Voulez-vous sauvegarder l'état du programme ? ")
+        if choice in ("Oui", "oui", "y", "yes", "Yes"):
+            return True
+        elif choice in ("Non", "non", "n", "no", "No"):
+            return False
+
+    #   =======================
     #         Error Views
     #   =======================
+
     def show_pair_player(self, player, player2):
         """Affiche une paire de joueur"""
         print(f"Première paire de joueur : {player} et {player2}")

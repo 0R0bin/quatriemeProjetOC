@@ -33,3 +33,7 @@ class Round:
         self.date_fin = object_json['DateFin']
         self.matchs_serialized = object_json['Match']
         return "Round crée"
+
+    def add_match(self, match_to_add):
+        """Add round to the list for db"""
+        self.matchs_serialized.append(match_to_add)

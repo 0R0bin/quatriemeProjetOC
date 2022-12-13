@@ -17,6 +17,21 @@ class Tournament:
 
     def serialized(self):
         """Transform Tournament object into JSON readable dictionnary"""
+        # If a field is null
+        if self.name is None:
+            self.name = "ToReload"
+        if self.place is None:
+            self.place = "ToReload"
+        if self.date is None:
+            self.date = "ToReload"
+        if self.timeplay is None:
+            self.timeplay = "ToReload"
+        if self.description is None:
+            self.description = "ToReload"
+        if self.nb_rounds is None:
+            self.nb_rounds = "ToReload"
+
+        # Transform our object to a dictionnary with null safety
         serialized_tournament = {
             "Name": self.name,
             "Place": self.place,
@@ -48,3 +63,12 @@ class Tournament:
     def add_players(self, player_to_add):
         """Add players to the list for db"""
         self.players.append(player_to_add)
+
+    def modify_end_date_round(self, end_date):
+        """Add players to the list for db"""
+        self.rounds[-1]['DateFin'] = end_date
+
+    def delete_last_round_save(self):
+        """Function to delete last round so we don't save multiple times rounds"""
+        if self.rounds:
+            del self.rounds[-1]

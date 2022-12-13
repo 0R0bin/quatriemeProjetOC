@@ -15,7 +15,7 @@ class Match:
     def serialized(self):
         """Transform Match object into JSON readable dictionnary"""
         player1_serialized = self.player1.serialized()
-        player2_serialized = self.player1.serialized()
+        player2_serialized = self.player2.serialized()
         tuple_serialized = ([player1_serialized, self.score1], [player2_serialized, self.score2])
         serialized_match = {
             "Player1": player1_serialized,

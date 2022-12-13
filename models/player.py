@@ -20,7 +20,8 @@ class Player:
             "Nickname": self.nickname,
             "Dob": self.dob,
             "Gender": self.gender,
-            "Ranking": self.ranking_world
+            "Ranking": self.ranking_world,
+            "Ranking_Tournament": int(self.ranking_tournament)
         }
         return serialized_player
 
@@ -31,7 +32,12 @@ class Player:
         self.dob = object_json['Dob']
         self.gender = object_json['Gender']
         self.ranking_world = object_json['Ranking']
+        self.ranking_tournament = object_json["Ranking_Tournament"]
         return "Joueur crée"
+
+    def get_name(self):
+        """Get name of the player"""
+        return self.name
 
     def __str__(self):
         return "Nom : " + self.name + "Prénom : " + self.nickname + "Ranking : " + self.ranking_world

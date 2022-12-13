@@ -8,9 +8,11 @@ body_path = os.getcwd()
 
 PATH_DB_PLAYER = r'\DataBase\db_players.json'
 PATH_DB_TOURNAMENT = r'\DataBase\db_tournament.json'
+PATH_DB_SAVE = r'\DataBase\db_to_retrieve.json'
 
 db_player = TinyDB(body_path + PATH_DB_PLAYER)
 db_tournament = TinyDB(body_path + PATH_DB_TOURNAMENT)
+db_save = TinyDB(body_path + PATH_DB_SAVE)
 
 #   ====================
 #       Players Save
@@ -115,7 +117,7 @@ def retrieve_all_tournament():
         for round in tournament['ListeRounds']:
             i += 1
             print(f"{i} - Round {round['Name']} commençant le {round['DateDebut']} finissant le {round['DateFin']}\n")
-            print(f"Un total de {len(round['Match'])} macth a été joué, voici la liste : \n")
+            print(f"Un total de {len(round['Match'])} matchs a été joué, voici la liste : \n")
             for match in round["Match"]:
                 string1 = f"Match opposant {match['Player1']['Name']} à {match['Player2']['Name']} : "
                 string2 = f"{match['Player1']['Name']} à obtenu {match['Score1']} points / "
@@ -224,3 +226,28 @@ def retrieve_x_in_tournament(name_tournament, x):
         if choice in ("Oui", "oui", "y", "yes"):
             return True
         print("Fermeture du programme...")
+
+#   ====================================
+#       SECTION FOR SAVED TOURNAMENT
+#   ====================================
+
+
+def retrive_last_tournament():
+    """Retrive the last tournament saved"""
+    try:
+        last_tournament = db_save.all()[0]  # Get the last element of the list of the all tournament
+        return last_tournament
+    except IndexError:
+        last_tournament = []    # If there's nothing in the JSON, send an empty list
+        return last_tournament
+
+
+def remove_saved_tournament():
+    """Remove the data from the table saving tournament saved"""
+    db_save.truncate()
+
+
+def save_to_db_temp_tournament(serialized_tournament):
+    """Save a player into the database"""
+    db_save.insert(serialized_tournament)
+    print(f"Le tournoi {serialized_tournament['Name']} a été sauvegardé")

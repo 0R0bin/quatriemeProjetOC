@@ -16,3 +16,5 @@ Pour générer un rapport flake8-html :
 ```
 flake8 --format=html --htmldir=flake-report --max-line-length=119 --ignore=E128 controllers models views
 ```
+
+Pour quitter et sauvegarder l'état du programme appuyez sur "Ctrl + C"
